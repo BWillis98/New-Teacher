@@ -76,18 +76,17 @@ else{
     until ( $ok )
 
     Write-Host $numberOfPeople
-    
+
+    # Why did "for($i=0; $i -lt $numberOfPeople; $i++)" not work?
     #Get info for X number of people where X = $numberOfPeople
-    $loops = 0;
-    while ($loops -lt $numberOfPeople){ #------------------------------------------------This is looping over and over and over do an echo $i test
-        $loops++
+    for($loops=0; $loops -lt $numberOfPeople; $loops++){ #------------------------------------------------This is looping over and over and over do an echo $i test
         Write-Host $loops
         $firstName = Read-Host -Prompt 'First name '
         $lastName = Read-Host -Prompt 'Last name '
         $email = $firstName.subString(0, 1) + $lastName + "@sd104.us"
         $filledOU = "false"
 
-        # Why did "for($i=0; $i -lt $numberOfPeople; $i++)" not work?
+        
         #Make sure the OU exists
         while ($filledOU -ne "true"){
 	        $ou = Read-Host -Prompt 'OU (Leaving blank will default to DISTRICT) '
@@ -100,24 +99,14 @@ else{
 		        If OU exists set $filledOU = true (done)
 		        If $filledOU is still false, show error message and continue loop (done)
 	        #>
-	
-	        #$CSV=Import-CSV "\\192.168.0.18\vendor\New Staff Member\OUs.csv" #List of all of the OUs
-            $CSV = Import-CSV "C:\Users\Brandon Willis\Desktop\Work\New Staff Member\OUs.csv"
-	        foreach($line in $CSV)
-	        { 
-		        $properties = $line | Get-Member -MemberType Properties
-		        for($a=0; $a -lt $properties.Count; $a++)
-		        {
-			        $column = $properties[$a]
-			        $columnvalue = $line | Select -ExpandProperty $column.Name
 
-			        if ($columnvalue -eq $ou)
-			        {
-					        $filledOU = "true"
-			        }
-		        }
+            $CSV = Import-CSV "OUs.csv"
+            foreach($line in $CSV){
+                if ($line.OU -eq $ou){
+				    $filledOU = "true"
+                    break;
+			    }
 	        }
-
 	        if ($filledOU -ne "true"){
 		        Write-Host "The OU: '$ou' does not exist." -fore "white" -back "red"
 	        }
@@ -125,7 +114,6 @@ else{
 
         #Create a row for each person's info
         $tempArray = ,@($firstName, $lastName, $ou)
-
         #Add row to people to add
         $peopleToAdd += $tempArray
     }
