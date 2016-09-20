@@ -1,1 +1,0 @@
-New-ADUser -Name Bradon -Surname Willis -AccountPassword 104Tempp -ChangePasswordAtLogon 0 -Description BadWolf -Enabled 1 -SamAccountName BWillis -ScriptPath Stafflgn.bat -PasswordNeverExpires 1 -UserPrincipalName BWillis -WhatIf
